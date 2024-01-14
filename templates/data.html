@@ -1,18 +1,35 @@
-{% extends "layout.html" %}
-{% block title %}ST Aloysius College{% endblock %}
-{%block content %}
-<form action="/" method="post" enctype="multipart/form-data">
+{% extends "layout.html" %} {% block content %}
+<!-- <div class="d-flex justify-content-center align-items-center"> -->
+<form
+  class="d-flex justify-content-center flex-column align-items-center"
+  action="/"
+  method="post"
+  enctype="multipart/form-data"
+>
   <div class="mb-3">
     <label for="year" class="form-label">Enter Year</label>
-    <input placeholder="Eg: 2022, 2023" autocomplete="off" pattern="(19|20)\d\d" class="form-control w-25 mb-2"
-      type="text" name="year" id="year" required>
+    <input
+      placeholder="Eg: 2022, 2023"
+      autocomplete="off"
+      pattern="(19|20)\d\d"
+      class="form-control mb-2 bg-dark text-light"
+      type="text"
+      name="year"
+      id="year"
+      required
+    />
     <label for="formFile" class="form-label">Upload Excel file here</label>
-    <input class="form-control w-25" type="file" id="formFile" name="data" required>
+    <input
+      class="form-control bg-dark text-white"
+      type="file"
+      id="formFile"
+      name="data"
+      required
+    />
   </div>
-  <button class="btn btn-secondary">Submit</button>
+  <button class="btn btn-outline-info">Submit</button>
 </form>
+<!-- </div> -->
 {% if data_table %}
-{{ data_table|safe }}
-{{ transaction_table|safe }}
-{% endif %}
-{% endblock %}
+<div class="table-responsive">{{ data_table|safe }}</div>
+{% endif %} {% endblock %}

@@ -1,7 +1,10 @@
-{% extends "layout.html" %}
-{% block title %}Defaulter{% endblock %}
-{%block content %}
-Course: {{course}}
-<a class="link-success" href="/defaulters/download">Download excel file</a>
-{{df_html|safe}}
+{% extends "layout.html" %} {% block title %}Defaulter{% endblock %} {%block
+content %}
+<div class="d-flex justify-content-between">
+  <p>Course: {{course}}</p>
+  <a class="btn btn-outline-primary" href="/defaulters/download"
+    >Download excel file</a
+  >
+</div>
+<div class="table-responsive">{{df_html|safe}}</div>
 {% endblock %}

@@ -3,8 +3,8 @@ from flask_session import Session
 import pandas as pd
 import os
 import glob
-from inst_api import instalments_per_course
-from helper import Defaulter
+from lib.course_instalments import get_instalments_per_course
+from lib.instalment_tracker import InstalmentTracker
 
 app = Flask(__name__)
 app.secret_key = os.urandom(25)
@@ -36,7 +36,7 @@ def index():
             data = pd.read_excel(os.path.join(
                 app.static_folder, session['filename']))
             students_data = pd.DataFrame(pd.read_excel(
-                os.path.join(os.getcwd(), "students_data.xlsx")))
+                os.path.join(os.getcwd(), "lib/students_data.xlsx")))
             df = pd.DataFrame(data).dropna()
             df["TRANSACTION"] = df["TRANSACTION"].str.replace("_", "")
             df = pd.merge(df, students_data[['MCODE', 'YEAR/SEM']])
@@ -56,12 +56,12 @@ def index():
 @app.route('/defaulters', methods=["GET", "POST"])
 def defaulters():
     if "filename" not in session:
-        return render_template("error.html", msg="No file available")
+        return render_template("error.html", msg="No file uploaded")
 
     AVAILABLE_COURSES = list(
-        instalments_per_course(session['year']).keys())
+        get_instalments_per_course(session['year']).keys())
     YEARS_SEMESTERS = set(tuple(v.keys())
-                          for k, v in instalments_per_course(session['year']).items())
+                          for k, v in get_instalments_per_course(session['year']).items())
     if request.method == "POST":
         if request.form.get('course') and not request.form.get("year_sem"):
             session["course"] = request.form.get("course")
@@ -74,7 +74,7 @@ def defaulters():
         elif request.form.get('course') and request.form.get('year_sem'):
             session["course"] = request.form.get("course")
             session["year_sem"] = request.form.get("year_sem")
-            session["payable_instalments"] = instalments_per_course(session['year']).get(
+            session["payable_instalments"] = get_instalments_per_course(session['year']).get(
                 session["course"]).get(session["year_sem"])
             return render_template("defaulters.html",
                                    payable_instalments=session["payable_instalments"])
@@ -92,7 +92,7 @@ def defaulters():
             return render_template("error.html", msg=f"Something went wrong")
 
         try:
-            defaulter = Defaulter(session['year'])
+            defaulter = InstalmentTracker(session['year'])
             final_dataframe = defaulter.find_defaulter(df, course=session["course"],
                                                        year_sem=session["year_sem"],
                                                        instalment_num=session["instalment_number"])
@@ -122,7 +122,7 @@ def defaulters():
 @app.route('/defaulters/course/<course_name>')
 def defaulters_by_course(course_name):
     if "filename" not in session:
-        return render_template("error.html", msg="No file available")
+        return render_template("error.html", msg="No file uploaded")
 
     try:
         data = pd.read_excel(os.path.join(
@@ -134,7 +134,7 @@ def defaulters_by_course(course_name):
         return render_template("error.html", msg=f"Something went wrong")
 
     try:
-        defaulter = Defaulter(session['year'])
+        defaulter = InstalmentTracker(session['year'])
         final_df = defaulter.find_defaulter_by_course(df, course=course_name)
         df_html = final_df.to_html(
             index=False, classes="my-4 table table-striped table-dark table-bordered")\
@@ -151,7 +151,7 @@ def defaulters_by_course(course_name):
 @app.route('/defaulters/year_sem/<year_sem>')
 def defaulters_by_year_sem(year_sem):
     if "filename" not in session:
-        return render_template("error.html", msg="No file available")
+        return render_template("error.html", msg="No file uploaded")
 
     try:
         data = pd.read_excel(os.path.join(
@@ -163,7 +163,7 @@ def defaulters_by_year_sem(year_sem):
         return render_template("error.html", msg=f"Something went wrong")
 
     try:
-        defaulter = Defaulter(session['year'])
+        defaulter = InstalmentTracker(session['year'])
         final_df = defaulter.find_defaulter_by_year_sem(df, year_sem=year_sem)
         df_html = final_df.to_html(
             index=False, classes="my-4 table table-striped table-dark table-bordered")\
@@ -180,12 +180,12 @@ def defaulters_by_year_sem(year_sem):
 @app.route('/defaulters/*')
 def all_defaulters():
     if "filename" not in session:
-        return render_template("error.html", msg="No file available")
+        return render_template("error.html", msg="No file uploaded")
 
     data = pd.read_excel(os.path.join(app.static_folder, session["filename"]))
     df = pd.DataFrame(data)
 
-    defaulter = Defaulter(session['year'])
+    defaulter = InstalmentTracker(session['year'])
     defaulters_df = defaulter.find_all_defaulters(df)
 
     defaulters_df.to_excel(os.path.join(app.static_folder,
@@ -198,7 +198,7 @@ def all_defaulters():
 @app.route('/defaulters/download')
 def download():
     if "filename" not in session and "defaulters" not in session:
-        return render_template("error.html", msg="No file available")
+        return render_template("error.html", msg="No file uploaded")
 
     return send_file(os.path.join(app.static_folder, 'defaulters.xlsx'))
 
@@ -206,15 +206,15 @@ def download():
 @app.route("/defaulters/download/*")
 def download_all():
     if "filename" not in session and "all_defaulters" not in session:
-        return render_template("error.html", msg="No file available")
+        return render_template("error.html", msg="No file uploaded")
 
     return send_file(os.path.join(app.static_folder, 'all_defaulters.xlsx'))
 
 
-@app.route('/destroy')
+@app.route('/destroy-session')
 def destroy_session():
     session.pop('filename', None)
-    files = glob.glob(os.path.join(app.static_folder, '*'))
+    files = glob.glob(os.path.join(app.static_folder, 'output/*'))
     for file in files:
         os.remove(file)
     return redirect('/')
@@ -225,15 +225,4 @@ def not_found(e): return render_template("error.html", msg=e)
 
 
 if __name__ == "__main__":
-    mode = "dev"
-    match mode:
-        case "dev":
-            app.run(debug=True)
-        case "prod":
-            from waitress import serve
-            import logging
-            logger = logging.getLogger('waitress')
-            logger.setLevel(logging.INFO)
-            serve(app, host="0.0.0.0", port=5000)
-        case _:
-            print("Enter valid mode, ie. ['dev', 'prod']")
+    app.run(debug=True)

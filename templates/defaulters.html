@@ -1,64 +1,88 @@
-{% extends "layout.html" %}
-{% block title %}Defaulter{% endblock %}
-{% block content %}
-<form id="form" class="my-5" action="/defaulters" method="post">
-
-    {% if AVAILABLE_COURSES %}
-    <select style="width: 20rem;" class="form-select form-select-sm mb-3" id="course" name="course"
-        aria-label=".form-select-sm example size 3 select">
-        <option value="">Select Course</option>
-        {% for course in AVAILABLE_COURSES %}
-        <option value="{{course}}">{{course}}</option>
-        {%endfor%}
+{% extends "layout.html" %} {% block content %}
+<form
+  id="form"
+  class="d-flex justify-content-center flex-column align-items-center mb-5"
+  action="/defaulters"
+  method="post"
+>
+  {% if AVAILABLE_COURSES %}
+  <div class="mb-3">
+    <label for="course" class="form-label">Select Course</label>
+    <select
+      style="width: 20rem"
+      class="form-select mb-3 bg-dark text-light"
+      id="course"
+      name="course"
+      aria-label=".form-select-sm example size 3 select"
+    >
+      <option value="">Select Course</option>
+      {% for course in AVAILABLE_COURSES %}
+      <option value="{{course}}">{{course}}</option>
+      {%endfor%}
+    </select>
+    {%endif%} {% if YEARS_SEMESTERS %}
+    <label for="year-sem" class="form-label">Select Year/Sem</label>
+    <select
+      style="width: 20rem"
+      class="form-select bg-dark text-light"
+      id="year-sem"
+      name="year_sem"
+      aria-label=".form-select-sm size 3 select example"
+    >
+      <option value="">Year or Semester</option>
+      {% for yr_sm in YEARS_SEMESTERS%} {% for i in yr_sm%}
+      <option value="{{i}}">{{i}}</option>
+      {% endfor %} {% endfor %}
+    </select>
+    {%endif%} {% if payable_instalments %}
+    <label for="inst" class="form-label">Select Instalment</label>
+    <select
+      style="width: 20rem"
+      class="form-select bg-dark text-light"
+      id="inst"
+      name="instalment"
+      aria-label=".form-select-sm size 3 select example"
+    >
+      <option value="">Select Instalment</option>
+      {% for i in payable_instalments %}
+      <option value="{{loop.index0}}">{{ i.strip() }}</option>
+      {%endfor%}
     </select>
     {%endif%}
+  </div>
 
-    {% if YEARS_SEMESTERS %}
-    <select style="width: 20rem" class="form-select form-select-sm mb-3" id="year-sem" name="year_sem"
-        aria-label=".form-select-sm size 3 select example">
-        <option value="">Year or Semester</option>
-        {% for yr_sm in YEARS_SEMESTERS%}
-        {% for i in yr_sm%}
-        <option value="{{i}}">{{i}}</option>
-        {% endfor %}
-        {% endfor %}
-    </select>
-    {%endif%}
-
-    {% if payable_instalments %}
-    <select style="width: 20rem;" class="form-select form-select-sm mb-3" id="inst" name="instalment"
-        aria-label=".form-select-sm size 3 select example">
-        <option value="">Select Instalment</option>
-        {% for i in payable_instalments %}
-        <option value="{{loop.index0}}">{{ i.strip() }}</option>
-        {%endfor%}
-    </select>
-    {%endif%}
-
-    {% if (AVAILABLE_COURSES and YEARS_SEMESTERS) or payable_instalments %}
-    <button disabled="disabled" id="submit-btn" class="btn btn-secondary">Next</button>
-    {%endif%}
+  {% if (AVAILABLE_COURSES and YEARS_SEMESTERS) or payable_instalments %}
+  <button disabled="disabled" id="submit-btn" class="btn btn-outline-info">
+    Next
+  </button>
+  {%endif%}
 </form>
+
 {% if df_html %}
-<h5 class="mb-2">{%if course%}Course: {{course}}{%endif%}<br>{%if year_sem%}Year_Semester: {{ year_sem }}{%endif%}<br>{%
-    if instalment%}Instalment: {{ instalment }}{%endif%}</h5>
-<a class="link-success" href="/defaulters/download">Download excel file</a>
-{{ df_html|safe }}
+<h5 class="mb-2">
+  {%if course%}Course: {{course}}{%endif%}<br />{%if year_sem%}Year_Semester: {{
+  year_sem }}{%endif%}<br />{% if instalment%}Instalment: {{ instalment
+  }}{%endif%}
+</h5>
+<a class="btn btn-outline-primary" href="/defaulters/download">
+  Download excel file
+</a>
+<div class="table-responsive">{{ df_html|safe }}</div>
 {% else %}
-<h1 class="text-light">No Data</h1>
+<h4 class="text-light text-center">No Data</h4>
 {% endif %}
-</div>
+
 <script>
-    document.getElementById('form').addEventListener("input", () => {
-        let course = document.forms["form"][0];
-        let yearSem = document.forms["form"][1];
-        let instalment = document.forms["form"][2];
-        let submitBtn = document.getElementById("submit-btn");
+  document.getElementById("form").addEventListener("input", () => {
+    let course = document.forms["form"][0];
+    let yearSem = document.forms["form"][1];
+    let instalment = document.forms["form"][2];
+    let submitBtn = document.getElementById("submit-btn");
 
-        if (course.value || yearSem.value)
-            return submitBtn.removeAttribute('disabled');
+    if (course.value || yearSem.value)
+      return submitBtn.removeAttribute("disabled");
 
-        return submitBtn.setAttribute("disabled", "disabled");
-    })
+    return submitBtn.setAttribute("disabled", "disabled");
+  });
 </script>
 {% endblock %}

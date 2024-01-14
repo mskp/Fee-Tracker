@@ -1,6 +1,10 @@
-{% extends "layout.html" %}
-{% block title %}Defaulter{% endblock %}
-{%block content %}
-<a class="link-success" href="/defaulters/download/*">Download excel file</a>
-{{dfs.to_html(index=False, classes="my-4 table table-striped table-dark table-bordered")|safe}}
-{% endblock %}
+{% extends "layout.html" %} {%block content %}
+<div class="d-flex justify-content-end">
+  <a class="btn btn-outline-primary" href="/defaulters/download/*"
+    >Download excel file</a
+  >
+</div>
+<div class="table-responsive">
+  {{dfs.to_html(index=False, classes="my-4 table table-striped table-dark
+  table-bordered")|safe}} {% endblock %}
+</div>

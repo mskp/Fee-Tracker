@@ -1,7 +1,9 @@
-{% extends "layout.html" %}
-{% block title %}Defaulter{% endblock %}
-{%block content %}
-Year/Sem: {{year_sem}}
-<a class="link-success" href="/defaulters/download">Download excel file</a>
-{{df_html|safe}}
+{% extends "layout.html" %} {%block content %}
+<div class="d-flex justify-content-between">
+  <p>Year/Sem: {{year_sem}}</p>
+  <a class="btn btn-outline-primary" href="/defaulters/download"
+    >Download excel file</a
+  >
+</div>
+<div class="table-responsive">{{df_html|safe}}</div>
 {% endblock %}
