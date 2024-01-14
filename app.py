@@ -26,7 +26,7 @@ def index():
             return render_template("error.html", msg="Invalid File Format")
 
         filename = "data.xlsx"
-        data.save(os.path.join(app.static_folder, filename))
+        data.save(os.path.join(app.static_folder, "output", filename))
         session['filename'] = filename
         session['year'] = year
         return redirect('/')
@@ -34,13 +34,13 @@ def index():
     if "filename" in session:
         try:
             data = pd.read_excel(os.path.join(
-                app.static_folder, session['filename']))
+                app.static_folder, "output", session['filename']))
             students_data = pd.DataFrame(pd.read_excel(
                 os.path.join(os.getcwd(), "lib/students_data.xlsx")))
             df = pd.DataFrame(data).dropna()
             df["TRANSACTION"] = df["TRANSACTION"].str.replace("_", "")
             df = pd.merge(df, students_data[['MCODE', 'YEAR/SEM']])
-            df.to_excel(os.path.join(app.static_folder,
+            df.to_excel(os.path.join(app.static_folder, "output",
                         session['filename']), index=False)
             data_table = df.to_html(
                 index=False, classes="my-4 table table-striped table-dark table-bordered")
@@ -84,7 +84,7 @@ def defaulters():
 
         try:
             data = pd.read_excel(os.path.join(
-                app.static_folder, session["filename"]))
+                app.static_folder, "output", session["filename"]))
             df = pd.DataFrame(data)
         except Exception as e:
             print(e)
@@ -97,7 +97,7 @@ def defaulters():
                                                        year_sem=session["year_sem"],
                                                        instalment_num=session["instalment_number"])
             final_dataframe.to_excel(os.path.join(
-                app.static_folder, "defaulters.xlsx"), index=False) if not final_dataframe.empty else ""
+                app.static_folder, "output", "defaulters.xlsx"), index=False) if not final_dataframe.empty else ""
 
             df_html = final_dataframe.to_html(
                 index=False, classes="my-4 table table-striped table-dark table-bordered")\
@@ -126,7 +126,7 @@ def defaulters_by_course(course_name):
 
     try:
         data = pd.read_excel(os.path.join(
-            app.static_folder, session["filename"]))
+            app.static_folder, "output", session["filename"]))
         df = pd.DataFrame(data)
     except Exception as e:
         print(e)
@@ -141,7 +141,7 @@ def defaulters_by_course(course_name):
             if not final_df.empty else ""
         session["defaulters"] = "defaulters.xlsx"
         final_df.to_excel(os.path.join(
-            app.static_folder, "defaulters.xlsx"), index=False) if not final_df.empty else ""
+            app.static_folder, "output", "defaulters.xlsx"), index=False) if not final_df.empty else ""
         return render_template("defaulters_by_course.html", df_html=df_html, course=course_name)
     except Exception as e:
         print(e)
@@ -155,7 +155,7 @@ def defaulters_by_year_sem(year_sem):
 
     try:
         data = pd.read_excel(os.path.join(
-            app.static_folder, session["filename"]))
+            app.static_folder, "output", session["filename"]))
         df = pd.DataFrame(data)
     except Exception as e:
         print(e)
@@ -170,7 +170,7 @@ def defaulters_by_year_sem(year_sem):
             if not final_df.empty else ""
         session["defaulters"] = "defaulters.xlsx"
         final_df.to_excel(os.path.join(
-            app.static_folder, "defaulters.xlsx"), index=False) if not final_df.empty else ""
+            app.static_folder, "output", "defaulters.xlsx"), index=False) if not final_df.empty else ""
         return render_template("defaulters_by_year-sem.html", df_html=df_html, year_sem=year_sem)
     except Exception as e:
         print(e)
@@ -182,13 +182,14 @@ def all_defaulters():
     if "filename" not in session:
         return render_template("error.html", msg="No file uploaded")
 
-    data = pd.read_excel(os.path.join(app.static_folder, session["filename"]))
+    data = pd.read_excel(os.path.join(
+        app.static_folder, "output", session["filename"]))
     df = pd.DataFrame(data)
 
     defaulter = InstalmentTracker(session['year'])
     defaulters_df = defaulter.find_all_defaulters(df)
 
-    defaulters_df.to_excel(os.path.join(app.static_folder,
+    defaulters_df.to_excel(os.path.join(app.static_folder, "output",
                                         "all_defaulters.xlsx"), index=False)
     session["all_defaulters"] = "all_defaulters.xlsx"
 
@@ -200,7 +201,7 @@ def download():
     if "filename" not in session and "defaulters" not in session:
         return render_template("error.html", msg="No file uploaded")
 
-    return send_file(os.path.join(app.static_folder, 'defaulters.xlsx'))
+    return send_file(os.path.join(app.static_folder, "output", 'defaulters.xlsx'))
 
 
 @app.route("/defaulters/download/*")
@@ -208,13 +209,13 @@ def download_all():
     if "filename" not in session and "all_defaulters" not in session:
         return render_template("error.html", msg="No file uploaded")
 
-    return send_file(os.path.join(app.static_folder, 'all_defaulters.xlsx'))
+    return send_file(os.path.join(app.static_folder, "output", 'all_defaulters.xlsx'))
 
 
 @app.route('/destroy-session')
 def destroy_session():
     session.pop('filename', None)
-    files = glob.glob(os.path.join(app.static_folder, 'output/*'))
+    files = glob.glob(os.path.join(app.static_folder, "output", '*'))
     for file in files:
         os.remove(file)
     return redirect('/')
