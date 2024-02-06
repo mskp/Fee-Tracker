@@ -1,6 +1,6 @@
 # Fee Dues Lookup System (College Project)
 
-![Logo](https://feelookup.pythonanywhere.com/static/favicon.ico)
+![Logo](/static/favicon.ico)
 
 **Deployment URL [https://feelookup.pythonanywhere.com](https://feelookup.pythonanywhere.com)**
 
@@ -10,15 +10,15 @@ The _Fee Dues Lookup System_ is a web-based application designed to automate and
 
 - **Home Page**
 
-![home](https://feelookup.pythonanywhere.com/static/readme-img/home.png)
+![home](/static/readme-img/home.png)
 
 - **Filter Page**
 
-![filter](https://feelookup.pythonanywhere.com/static/readme-img/filter.png)
+![filter](/static/readme-img/filter.png)
 
 - **Fetch All Dues Info Page**
 
-![all-dues](https://feelookup.pythonanywhere.com/static/readme-img/all.png)
+![all-dues](/static/readme-img/all.png)
 
 ## Features:
 
